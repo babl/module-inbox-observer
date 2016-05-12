@@ -3,20 +3,31 @@
 var Promise = require('bluebird');
 var config = require('./knexfile')[process.env.NODE_ENV || 'production'];
 var knex = require('knex')(config);
+var stdin = process.stdin;
 
 function readStdin() {
-  var payload = [], stdin = process.stdin;
-
-  if (stdin.isTTY) {
-    return new Buffer('');
-  }
+  var payload = [];
+  var length = 0;
 
   return new Promise(function(resolve, reject) {
     function resolveWithPayload() {
-      return resolve(Buffer.concat(payload));
+      return resolve(Buffer.concat(payload, length));
     }
 
-    stdin.on('data', payload.push.bind(payload));
+    function collectChunks() {
+      var chunk;
+
+      while (chunk = stdin.read()) {
+        payload.push(chunk);
+        length += chunk.length;
+      }
+    }
+
+    if (stdin.isTTY) {
+      return resolveWithPayload();
+    }
+
+    stdin.on('readable', collectChunks);
     stdin.on('end', resolveWithPayload);
     stdin.on('error', reject);
   });
