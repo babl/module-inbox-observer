@@ -7,16 +7,18 @@ var knex = require('knex')(config);
 function readStdin() {
   var payload = [], stdin = process.stdin;
 
+  if (stdin.isTTY) {
+    return new Buffer('');
+  }
+
   return new Promise(function(resolve, reject) {
-    if (stdin.isTTY) {
-      resolve(Buffer.concat(payload));
-    } else {
-      stdin.on('data', payload.push.bind(payload));
-      stdin.on('close', function() {
-        resolve(Buffer.concat(payload));
-      });
-      stdin.on('error', reject);
+    function resolveWithPayload() {
+      return resolve(Buffer.concat(payload));
     }
+
+    stdin.on('data', payload.push.bind(payload));
+    stdin.on('end', resolveWithPayload);
+    stdin.on('error', reject);
   });
 }
 
