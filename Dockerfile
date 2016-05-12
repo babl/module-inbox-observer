@@ -7,5 +7,5 @@ RUN chmod +x /bin/app
 WORKDIR /data
 RUN npm install
 ENV NODE_ENV production
-ENV DATABASE_URL http://user:password@192.168.59.103:5432/db
+ENV DATABASE_URL postgres://rhdqnulbntvjnb:jXJe9v_C9GZV0cpycMqdAxu3_w@ec2-54-243-210-223.compute-1.amazonaws.com:5432/d1lt0vq3rb6tf6?ssl=true
 CMD ["babl-server"]
