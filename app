@@ -33,8 +33,12 @@ function readStdin() {
   });
 }
 
+function prepareDb() {
+  return knex.migrate.latest(config);
+}
+
 function prepare() {
-  return knex.migrate.latest(config).then(readStdin);
+  return process.env.hasOwnProperty('DB_MIGRATE') ? prepareDb().then(readStdin) : readStdin();
 }
 
 function store(payload) {
@@ -49,9 +53,12 @@ function store(payload) {
   return knex('messages').insert(data);
 }
 
-function quit() {
-  process.exit(0);
-  return null;
+function cleanup() {
+  knex.destroy();
 }
 
-prepare().then(store).then(quit);
+function errorHandler(err) {
+  process.stderr.write(err.toString());
+}
+
+prepare().then(store).catch(errorHandler).finally(cleanup);
