@@ -7,4 +7,5 @@ RUN chmod +x /bin/app
 WORKDIR /data
 RUN npm install
 ENV NODE_ENV production
+ENV DATABASE_URL http://user:password@192.168.59.103:5432/db
 CMD ["babl-server"]
