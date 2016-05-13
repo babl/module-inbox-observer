@@ -58,6 +58,7 @@ function cleanup() {
 }
 
 function errorHandler(err) {
+  process.exitCode = 1;
   process.stderr.write(err.toString());
 }
 
