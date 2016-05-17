@@ -33,14 +33,6 @@ function readStdin() {
   });
 }
 
-function prepareDb() {
-  return knex.migrate.latest(config);
-}
-
-function prepare() {
-  return process.env.hasOwnProperty('DB_MIGRATE') ? prepareDb().then(readStdin) : readStdin();
-}
-
 function store(payload) {
   payload || (payload = new Buffer(''));
   var data = {
@@ -62,4 +54,4 @@ function errorHandler(err) {
   process.stderr.write(err.toString());
 }
 
-prepare().then(store).catch(errorHandler).finally(cleanup);
+readStdin().then(store).catch(errorHandler).finally(cleanup);
