@@ -37,15 +37,20 @@ function store(payload) {
   payload || (payload = new Buffer(''));
   var now = new Date();
   var data = {
-    to: process.env.USER || '',
-    context: process.env.MODULE || '',
-    content_type: process.env.CONTENT_TYPE || '',
+    to: process.env.USER,
+    context: process.env.MODULE,
+    content_type: process.env.CONTENT_TYPE,
     payload: payload.toString('binary'),
     created_at: now,
     updated_at: now,
   };
 
-  return knex('messages').insert(data);
+  data.context == null && delete data.context;
+  data.content_type == null && delete data.content_type;
+
+  if (data.to) {
+    return knex('messages').insert(data);
+  }
 }
 
 function cleanup() {
