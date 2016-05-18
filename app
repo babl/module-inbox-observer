@@ -40,7 +40,7 @@ function store(payload) {
     to: process.env.USER,
     context: process.env.MODULE,
     content_type: process.env.CONTENT_TYPE,
-    payload: payload.toString('binary'),
+    payload: payload,
     created_at: now,
     updated_at: now,
   };
