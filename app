@@ -38,7 +38,7 @@ function store(payload) {
   var now = new Date();
   var data = {
     to: process.env.USER,
-    context: process.env.MODULE,
+    context: process.env.LABEL,
     content_type: process.env.CONTENT_TYPE,
     payload: payload,
     created_at: now,
